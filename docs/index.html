@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>gRPC + protobuf</title>
+
+    <link rel="stylesheet" href="css/reveal.css"/>
+    <!--<link rel="stylesheet" href="css/theme/black.css">-->
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="css/zenburn.css"/>
+
+    <!-- Docker theme -->
+    <link rel="stylesheet" href="css/theme/simple.css"/>
+    <link rel="stylesheet" href="css/theme/sky.css"/>
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <header></header>
+
+        <!-- slide 1 -->
+        <section data-state="slide1">
+            <style>.slide1 header:after {
+                content: "gRPC + protobuf";
+            }</style>
+            <div>
+                <img src="img/grpc-logo.png"/>
+                <br/>
+            </div>
+        </section>
+
+        <!-- slide 2 - Overview -->
+        <section data-state="slide2">
+            <style>.slide2 header:after {
+                content: "SOAP, REST, gRPC, ...?";
+            }</style>
+            <section class="al-left">
+                <h4>RPC</h4>
+                <ul>
+                    <li><strong>R</strong>emote</li>
+                    <li><strong>P</strong>rocedure</li>
+                    <li><strong>C</strong>alls</li>
+                </ul>
+
+                <aside class="notes">
+                    RPC slouzi ke komunikaci mezi jednotlivymi pocitaci. Existuje od 1970.
+
+                    Metodika spousteni procedury nebo programu.
+                </aside>
+            </section>
+
+            <section class="al-center">
+                <br/>
+                <img src="img/protocol_comparison.png"/>
+
+                <aside class="notes">
+                    SOAP (Simple Object Access Protocol) - XML<br />
+                    REST (Representational State Transfer)<br />
+                    <br />
+
+                    gRPC - vznikl z interniho projektu Google (Stubby - 2001)<br />
+                    GraphQL - FB - interni od 2013<br />
+                    Apache Thrift - puvodne FB<br />
+                </aside>
+            </section>
+        </section>
+
+        <!-- slide 3 - gRPC -->
+        <section data-state="slide3">
+            <section>
+                <style>
+                    .slide3 header:after {
+                        content: "gRPC";
+                    }
+                    .slide3-1 header:after {
+                        content: "Význam písmene \"g\"";
+                    }
+                    .slide3-2 header:after {
+                        content: "Podporované programovací jazyky";
+                    }
+                    .slide3-3 header:after {
+                        content: "HTTP/2 demo";
+                    }
+                </style>
+
+                <ul>
+                    <li>open-source RPC framework od Googlu</li>
+                    <li>k přenosu dat využívá HTTP/2</li>
+                    <li>binární přenos dat</li>
+                    <li>streaming (bidirectional - server push)</li>
+                    <li>bezpečnost - podpora TLS (TLS 1.2 a vyšší)</li>
+                    <li>podpora 10+ programovacích jazyků (gRPC core, Protocol Buffers projects)</li>
+                    <li>Interceptors</li>
+                </ul>
+
+                <aside class="notes">
+                    Interface je vetsinou definovan pomoci IDL (Interface Definition Language) - konkretne Protocol Buffers. <br />
+                    Umoznuje vygenerovat casti kodu jak pro server tak klienta.<br />
+                    <br />
+
+                    HTTP/2<br />
+                     - multiplex - vice paralelnich pozadavku v jednom sitovem spojeni<br />
+                     - full-duplex - oboustrana komunikace<br />
+                    http://www.http2demo.io/ <br />
+                    <br />
+
+                    Steaming - request/response muze mit velkou velikost a data jsou posilana postupne s ohledem na vyuziti RAM<br />
+                    Interceptors - obdoba middleware - mozno doprogramovat ruzne funkcionality (logovani, opravneni, ....)<br />
+                </aside>
+            </section>
+
+            <section data-state="slide3-1">
+                <ul style="position: absolute; left: 1%; top: 100px; width: 48%;" class="absolute-element">
+                    <li> 1.0 => 'gRPC'</li>
+                    <li> 1.1 => 'good'</li>
+                    <li> 1.2 => 'green'</li>
+                    <li> 1.3 => 'gentle'</li>
+                    <li> 1.4 => 'gregarious'</li>
+                    <li> 1.6 => 'garcia'</li>
+                    <li> 1.7 => 'gambit'</li>
+                    <li> 1.8 => 'generous'</li>
+                    <li> 1.9 => 'glossy'</li>
+                    <li> 1.10 => 'glamorous'</li>
+                    <li> 1.11 => 'gorgeous'</li>
+                </ul>
+                <ul style="position: absolute; left: 52%; top: 100px; width: 48%;" class="absolute-element">
+                    <li> 1.12 => 'glorious'</li>
+                    <li> 1.13 => 'gloriosa'</li>
+                    <li> 1.14 => 'gladiolus'</li>
+                    <li> 1.15 => 'glider'</li>
+                    <li> 1.16 => 'gao'</li>
+                    <li> 1.17 => 'gizmo'</li>
+                    <li> 1.18 => 'goose'</li>
+                    <li> 1.19 => 'gold'</li>
+                    <li> 1.20 => 'godric'</li>
+                    <li> 1.21 => 'gandalf'</li>
+                </ul>
+            </section>
+
+            <section data-state="slide3-2">
+                <ul>
+                    <li>Java (včetně podpory pro Android)</li>
+                    <li>Go</li>
+                    <li>C/C++</li>
+                    <li>C#</li>
+                    <li>Node.js</li>
+                    <li>PHP</li>
+                    <li>Ruby</li>
+                    <li>Python</li>
+                    <li>Objective-C (pro iOS)</li>
+                    <li>Dart</li>
+                    <li>Swift</li>
+                    <li>Haskell</li>
+                </ul>
+
+                <aside class="notes">
+                    Ne vsechny jazyky podporuji gRPC server a asynchroni volani<br />
+                    Nepodporované funkce jsou postupne dodelavany
+                </aside>
+            </section>
+
+            <section>
+                <br />
+                <img src="img/communication.svg" width="100%" />
+            </section>
+
+            <section data-state="slide3-3">
+                <br />
+                <br />
+                <img src="img/http2_demo.gif" />
+            </section>
+        </section>
+
+        <!-- slide 4 - Protobuf -->
+        <section data-state="slide4">
+            <section>
+                <style>.slide4 header:after {
+                    content: "Protocol Buffers";
+                }</style>
+                <p>
+                </p>
+            </section>
+        </section>
+
+        <section data-state="slide5">
+            <style>.slide5 header:after {
+                content: "Odkazy";
+            }</style>
+
+            <div class="al-left">
+                https://grpc.io/
+                https://github.com/grpc/grpc
+
+                <ul>
+                    <li><a href="https://developers.google.com/protocol-buffers/" target="_blank">Protocol Buffers</a></li>
+                    <li><a href="https://developers.google.com/protocol-buffers/" target="_blank">Protocol Buffers</a></li>
+                    <li><a href="https://developers.google.com/protocol-buffers/" target="_blank">Protocol Buffers</a></li>
+                </ul>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script src="js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+    // More info about config & dependencies:
+    // - https://github.com/hakimel/reveal.js#configuration
+    // - https://github.com/hakimel/reveal.js#dependencies
+    Reveal.initialize({
+        dependencies: [
+            // { src: 'plugin/markdown/marked.js' },
+            // { src: 'plugin/markdown/markdown.js' },
+            {src: 'js/plugin/notes/notes.js', async: true},
+            {src: 'js/plugin/zoom-js/zoom.js', async: true},
+            {
+                src: 'js/plugin/highlight/highlight.js', async: true, callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ],
+        history: true
+    });
+</script>
+</body>
+</html>
