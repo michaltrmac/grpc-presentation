@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <title>gRPC + protobuf</title>
+    <title>Protocol buffers + gRPC</title>
 
     <link rel="stylesheet" href="css/reveal.css"/>
     <!--<link rel="stylesheet" href="css/theme/black.css">-->
@@ -15,26 +15,203 @@
     <!-- Docker theme -->
     <link rel="stylesheet" href="css/theme/simple.css"/>
     <link rel="stylesheet" href="css/theme/sky.css"/>
+
+    <script>
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
 </head>
 <body>
 <div class="reveal">
     <div class="slides">
         <header></header>
 
-        <!-- slide 1 -->
+        <!-- slide 0 - title -->
+        <section data-state="slide0">
+            <h2>
+                Protocol buffers <br />
+                <small>(Protobuf)</small><br />
+                + <br />
+                gRPC <br />
+            </h2>
+        </section>
+
+        <!-- slide 1 - Protobuf -->
         <section data-state="slide1">
-            <style>.slide1 header:after {
-                content: "gRPC + protobuf";
+            <section>
+                <img src="img/protobuf_logo.png" />
+            </section>
+        </section>
+
+        <!-- slide 2 - Protobuf - About -->
+        <section data-state="slide2">
+            <style>.slide2 header:after {
+                content: "Co je Protobuf?";
             }</style>
+
+            <section>
+                <p>
+                    Jazykově a platformově neutrální nástroj na serializaci a deserializaci přenášených dat.<br />
+                    Podobný jako např. XML nebo JSON, ale menší, rychlejší a jednodušší.
+                </p>
+            </section>
+
+            <section class="al-left">
+                <ul>
+                    <li>open-source od Googlu</li>
+                    <li>veřejně publikován v roce 2008</li>
+                    <li>podpora generování kódu pro jazyky Java, Python, Objective-C a C++</li>
+                    <li>verze 3 přidává podporu jazyků Dart, Go, Ruby a C#</li>
+                </ul>
+
+                <aside class="notes">
+                    Mozno generovat i do dalsich jazyku pres C vrstvu (binds).
+                </aside>
+            </section>
+        </section>
+
+        <!-- Protobuf - how it works -->
+        <section data-state="slide3">
+            <style>.slide3 header:after {
+                content: "Jak Protobuf funguje?";
+            }</style>
+
+            <section>
+                <br />
+                <br />
+                <p>
+                    Vytvoření specifikace struktury dat v souboru <code>".proto"</code>
+                </p>
+
+                <pre class="stretch"><code data-trim data-noescape>
+                    message Person {
+                        string name = 1;
+                        int32 id = 2;
+                        string email = 3;
+
+                        enum PhoneType {
+                            MOBILE = 0;
+                            HOME = 1;
+                            WORK = 2;
+                        }
+
+                        message PhoneNumber {
+                            string number = 1;
+                            PhoneType type = 2 [default = HOME];
+                        }
+
+                        repeated PhoneNumber phone = 4;
+                    }
+                </code></pre>
+
+                <aside class="notes">
+                    <ul>
+                        <li>soubor se sklada z jedne nebo vice zprac</li>
+                        <li>kazda zprava je maly logicky prvek informaci</li>
+                        <li>obsahuje serii unikatne cislovanych poli</li>
+                        <li>kazde pole ma specifikovany typ, nazev a unikatni cislo (tag)</li>
+                        <li>typ muze byt: cislo (int nebo float), boolean, string, byte nebo (jako v prikladu) dalsi definovane zpravy</li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section>
+                <br />
+                <br />
+                <p>
+                    Vygenerování tříd potřebných pro čtení / zápis zpráv.
+                </p>
+                <p>
+                    Ke generování se používá kompilátor <code>protoc</code>.
+                </p>
+
+                <pre><code data-trim data-noescape>
+                    protoc -I=$SRC_DIR --python_out=$DST_DIR $SRC_DIR/person.proto
+                </code></pre>
+
+                <pre class="stretch"><code data-trim data-noescape>
+                    import person_pb2
+                    person = person_pb2.Person()
+                    person.id = 1234
+                    person.name = "John Doe"
+                    person.email = "jdoe@example.com"
+                    phone = person.phones.add()
+                    phone.number = "555-4321"
+                    phone.type = person_pb2.Person.HOME
+                </code></pre>
+
+                <aside class="notes">
+                    <ul>
+                        <li>kompilovani bude reseno automaticky pomoci dockeru</li>
+                    </ul>
+                </aside>
+            </section>
+        </section>
+
+        <!-- slide 4 - features -->
+        <section data-state="slide4" class="al-left">
+            <style>
+                .slide4-1 header:after {
+                    content: "Zpětná / Dopředná kompatibilita ";
+                }
+                .slide4-2 header:after {
+                    content: "Porovnání s XML?"
+                }
+            </style>
+
+            <section data-state="slide4-1">
+                <ul>
+                    <li>velkou výhodou během aktualizace schémat</li>
+                    <li>zakomponovaná přímo v binárním formátu</li>
+                    <li>možnost generování tříd jednoduších pro použití</li>
+                </ul>
+            </section>
+
+            <section data-state="slide4-2">
+                <p>Protocol buffer:</p>
+                <ul>
+                    <li>je jednodušší</li>
+                    <li>3 - 10x menší</li>
+                    <li>20 - 100x rychlejší</li>
+                </ul>
+
+                <pre style="position: absolute; left: 1%; width: 48%;">XML:<code data-trim data-noescape>
+                    &lt;person&gt;
+                        &lt;name&gt;John Doe&lt;/name&gt;
+                        &lt;email&gt;jdoe@example.com&lt;/email&gt;
+                    &lt;/person&gt;
+                </code></pre>
+
+                <pre style="position: absolute; left: 52%; width: 48%;">Protobuf:<code data-trim data-noescape>
+                    person {
+                        name: "John Doe"
+                        email: "jdoe@example.com"
+                    }
+                </code></pre>
+
+                <aside class="notes">
+                    <ul>
+                        <li>protobuf je v textove reprezentaci, pri prenosu je serializovan do binarni podoby</li>
+                        <li>protobuf: 28 bytes long and take around 100-200 nanoseconds to parse</li>
+                        <li>XML: 69 bytes if you remove whitespace, and would take around 5,000-10,000 nanoseconds to parse</li>
+                    </ul>
+                </aside>
+            </section>
+        </section>
+
+        <!-- slide 5 - gRPC logo -->
+        <section data-state="slide5">
             <div>
                 <img src="img/grpc-logo.png"/>
-                <br/>
             </div>
         </section>
 
-        <!-- slide 2 - Overview -->
-        <section data-state="slide2">
-            <style>.slide2 header:after {
+        <!-- slide 6 - RPC Overview -->
+        <section data-state="slide6">
+            <style>.slide6 header:after {
                 content: "SOAP, REST, gRPC, ...?";
             }</style>
             <section class="al-left">
@@ -68,20 +245,20 @@
             </section>
         </section>
 
-        <!-- slide 3 - gRPC -->
-        <section data-state="slide3">
-            <section>
+        <!-- slide 7 - gRPC -->
+        <section data-state="slide7">
+            <section class="al-left">
                 <style>
-                    .slide3 header:after {
+                    .slide7 header:after {
                         content: "gRPC";
                     }
-                    .slide3-1 header:after {
+                    .slide7-1 header:after {
                         content: "Význam písmene \"g\"";
                     }
-                    .slide3-2 header:after {
+                    .slide7-2 header:after {
                         content: "Podporované programovací jazyky";
                     }
-                    .slide3-3 header:after {
+                    .slide7-3 header:after {
                         content: "HTTP/2 demo";
                     }
                 </style>
@@ -89,7 +266,7 @@
                 <ul>
                     <li>open-source RPC framework od Googlu</li>
                     <li>k přenosu dat využívá HTTP/2</li>
-                    <li>binární přenos dat</li>
+                    <li>binární přenos dat (protobuf)</li>
                     <li>streaming (bidirectional - server push)</li>
                     <li>bezpečnost - podpora TLS (TLS 1.2 a vyšší)</li>
                     <li>podpora 10+ programovacích jazyků (gRPC core, Protocol Buffers projects)</li>
@@ -102,8 +279,8 @@
                     <br />
 
                     HTTP/2<br />
-                     - multiplex - vice paralelnich pozadavku v jednom sitovem spojeni<br />
-                     - full-duplex - oboustrana komunikace<br />
+                    - multiplex - vice paralelnich pozadavku v jednom sitovem spojeni<br />
+                    - full-duplex - oboustrana komunikace<br />
                     http://www.http2demo.io/ <br />
                     <br />
 
@@ -112,7 +289,7 @@
                 </aside>
             </section>
 
-            <section data-state="slide3-1">
+            <section data-state="slide7-1">
                 <ul style="position: absolute; left: 1%; top: 100px; width: 48%;" class="absolute-element">
                     <li> 1.0 => 'gRPC'</li>
                     <li> 1.1 => 'good'</li>
@@ -140,7 +317,7 @@
                 </ul>
             </section>
 
-            <section data-state="slide3-2">
+            <section data-state="slide7-2" class="al-left">
                 <br />
                 <ul>
                     <li>Java (včetně podpory pro Android)</li>
@@ -169,37 +346,28 @@
                 <img src="img/communication.svg" width="100%" />
             </section>
 
-            <section data-state="slide3-3">
+            <section data-state="slide7-3">
                 <br />
                 <br />
                 <img src="img/http2_demo.gif" />
             </section>
         </section>
 
-        <!-- slide 4 - Protobuf -->
-        <section data-state="slide4">
-            <section>
-                <style>.slide4 header:after {
-                    content: "Protocol Buffers";
-                }</style>
-                <p>
-                </p>
-            </section>
+        <section data-state="slide8">
+            <img src="img/demo_time.gif" />
         </section>
 
-        <section data-state="slide5">
-            <style>.slide5 header:after {
+        <section data-state="slide10">
+            <style>.slide10 header:after {
                 content: "Odkazy";
             }</style>
 
             <div class="al-left">
-                https://grpc.io/
-                https://github.com/grpc/grpc
-
                 <ul>
-                    <li><a href="https://developers.google.com/protocol-buffers/" target="_blank">Protocol Buffers</a></li>
-                    <li><a href="https://developers.google.com/protocol-buffers/" target="_blank">Protocol Buffers</a></li>
-                    <li><a href="https://developers.google.com/protocol-buffers/" target="_blank">Protocol Buffers</a></li>
+                    <li><a href="https://grpc.io/" target="_blank">gRPC</a></li>
+                    <li><a href="https://github.com/grpc/grpc" target="_blank">gRPC Source Code</a></li>
+                    <li><a href="https://developers.google.com/protocol-buffers/docs/proto3" target="_blank">Protocol Buffers (v3 Docs)</a></li>
+                    <li><a href="https://github.com/michaltrmac/grpc-presentation" target="_blank">Prezentace + příklady</a></li>
                 </ul>
             </div>
         </section>
