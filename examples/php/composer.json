@@ -1,0 +1,8 @@
+{
+  "name": "grpc/grpc-demo",
+  "description": "gRPC example for PHP",
+  "require": {
+    "grpc/grpc": "^v1.15.0",
+    "google/protobuf": "v3.6.1.3"
+  }
+}

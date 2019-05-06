@@ -1,0 +1,22 @@
+version: '3'
+
+#docker run --rm -it -v `pwd`/src:/app --entrypoint /bin/bash  namely/protoc-all
+#protoc --proto_path=/app/protos  --php_out=/app/php  --grpc_out=/app/php  --plugin=protoc-gen-grpc=/usr/local/bin/grpc_php_plugin  /app/protos/helloworld.proto
+
+services:
+  proto-gen:
+    image: namely/protoc-all:latest
+    entrypoint: []
+#    entrypoint: tail
+    working_dir: /usr/local/src
+#    command: python server.py
+#    command: /bin/bash
+#    command: -f /dev/null
+    command: >
+      /bin/bash -c "protoc --proto_path=./protos  --php_out=./php  --grpc_out=./php  --plugin=protoc-gen-grpc=/usr/local/bin/grpc_php_plugin  ./protos/validator.proto;
+      protoc --proto_path=./protos  --python_out=./python  --grpc_out=./python --plugin=protoc-gen-grpc=/usr/local/bin/grpc_python_plugin ./protos/validator.proto;"
+    user: 1000:1000
+    volumes:
+      - $PWD/protos:/usr/local/src/protos
+      - $PWD/python:/usr/local/src/python
+      - $PWD/php:/usr/local/src/php

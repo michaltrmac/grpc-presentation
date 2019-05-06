@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package validator;
+
+// The validator service definition.
+service Validator {
+    // validate personal identification number
+    rpc ValidatePIN (PINRequest) returns (PINResponse) {}
+}
+
+// The request message containing the user's personal identification number.
+message PINRequest {
+    string pin = 1;
+}
+
+// The response message containing the greetings
+message PINResponse {
+    bool valid = 1;
+    string err = 2;
+}
