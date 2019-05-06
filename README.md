@@ -12,6 +12,8 @@ There is one service called "Validator" with method "ValidatePIN". This method i
 
 ## How to run examples
 
+Run all commands below in examples dir
+
 1. Generete stubs from proto files
 ```
 docker-compose -f docker-compose-proto-gen.yml up
