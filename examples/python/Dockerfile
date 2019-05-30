@@ -1,4 +1,4 @@
-FROM eu.gcr.io/collaborativemanagement-212609/python/grpc:1.19.0-apline
+FROM eu.gcr.io/collaborativemanagement-212609/python/grpc:1.19.0-alpine
 
 COPY requirements.txt requirements.txt
 
