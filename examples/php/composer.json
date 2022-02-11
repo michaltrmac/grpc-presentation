@@ -3,6 +3,6 @@
   "description": "gRPC example for PHP",
   "require": {
     "grpc/grpc": "^v1.15.0",
-    "google/protobuf": "v3.6.1.3"
+    "google/protobuf": "v3.15.0"
   }
 }
